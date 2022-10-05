@@ -110,3 +110,8 @@ add_action('wp_enqueue_scripts', function() {
             ['jquery'], false, false);
     }
 });
+
+function allow_5_min( $min_time ) {
+  return 4;
+}
+add_filter( 'app_safe_min_time', 'allow_5_min' );

@@ -6,10 +6,11 @@
     </div>
     <div class="col-xs-12 col-sm-6">
         <div class="row">
-            <div class="col-xs-12">
-                <?php echo do_shortcode('[tt_img id="185" link="https://www.athletenetwork.com/" responsive=true target="_blank"]'); ?>
+            <div class="col-xs-12 hidden-xs" style="height: 5rem;">
+                <?php // echo do_shortcode('[tt_img id="185" link="https://www.athletenetwork.com/" responsive=true target="_blank"]'); ?>
             </div>
         </div>
+        <!--<div class="row" style="margin-top: 1rem;">-->
         <div class="row" style="margin-top: 1rem;">
             <div class="col-xs-8 col-xs-offset-4">
                 <p style="text-align: right; font-size: 200%; font-family: oswald; color: #003556;">The <span style="color: #8E734E;">GOLD Standard</span> in Body Composition Measurement</p>
