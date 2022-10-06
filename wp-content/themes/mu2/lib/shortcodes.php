@@ -9,17 +9,17 @@ add_shortcode('post', function ($args) {
         $excerpt . '</a>';
 });
 
-add_shortcode('events', function ($args) {
-    $posts = get_posts([
-        'numberposts' => $args['count'],
-        'post_type' => $args['type'],
-    ]);
-    foreach ($posts as $post) {
-        $link = get_permalink($post->ID);
-        $retval .= "<a href=\"$link\">$post->post_title</a><br>";
-    }
-    return $retval;
-});
+// add_shortcode('events', function ($args) {
+//     $posts = get_posts([
+//         'numberposts' => $args['count'],
+//         'post_type' => $args['type'],
+//     ]);
+//     foreach ($posts as $post) {
+//         $link = get_permalink($post->ID);
+//         $retval .= "<a href=\"$link\">$post->post_title</a><br>";
+//     }
+//     return $retval;
+// });
 
 add_shortcode('tt_sponsor', function ($args) {
     $post = get_posts([

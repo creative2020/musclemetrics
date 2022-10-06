@@ -67,9 +67,149 @@ if (!function_exists('fwp_get_future_events')) :
     /**
      * get the future events list
      */
-    function name()
+    function fwp_get_future_events()
     {
-        $return = 'Hello';
-        return $return;
+        // query events
+        $args = [
+            'post_type' => 'tribe_events',
+            'post_status' => 'publish',
+            'posts_per_page' => 10,
+            'orderby' => 'DSC',
+            'order' => 'date',
+        ];
+
+        $q = new WP_Query($args);
+
+        $future_posts = [];
+
+        foreach ($q->posts as $post) {
+            // showme($post);
+            if (is_event_past($post->ID) != true) {
+                $start_date = fwp_get_start_date($post->ID);
+                array_push($future_posts, ['id' => $post->ID, 'start_date' => $start_date]);
+            }
+        }
+        usort($future_posts, function ($item1, $item2) {
+            return $item1['start_date'] <=> $item2['start_date'];
+        });
+        return $future_posts;
+    }
+
+endif;
+
+// ****************************************************
+if (!function_exists('is_event_past')) :
+    /**
+     * check if the start date is before today
+     */
+    function is_event_past($post_id)
+    {
+        // start date
+        $start_date = fwp_get_start_date($post_id);
+        $start_timestamp = strtotime($start_date);
+
+        // today
+        $today = time();
+
+        if ($today > $start_timestamp) {
+            return true;
+        }
+    }
+endif;
+
+// ****************************************************
+if (!function_exists('fwp_display_next_event')) :
+    /**
+     * display the next event
+     */
+    function fwp_display_next_event()
+    {
+        $events = fwp_get_future_events();
+        if (empty($events)) {
+            return 'Coming Soon.';
+        }
+        $next_event = $events[0];
+        // pull meta for each post
+
+        $post = get_post($next_event['id']);
+        $permalink = get_permalink($post->ID);
+        // get event start date
+        $start_date = fwp_get_start_date($post->ID);
+
+        $size = '250,125';
+        $image = get_the_post_thumbnail($post->ID, $size, $attr = null);
+
+        //get section html
+        ob_start();
+?>
+        <a href="<?= $permalink ?>">
+            <div id="tt-list-event" class="row">
+                <?php if (empty($image)) {
+                    $next_col_size = '12';
+                } else { ?>
+                    <div id="tt-list-img" class="col-sm-3">
+                        <?= $image; ?>
+                    </div>
+                    <?php $next_col_size = '9'; ?>
+                <?php } ?>
+                <div id="<?= $post->post_title ?>" class="col-sm-<?= $next_col_size; ?>">
+                    <div>
+                        <h5 style="color:white;"><?= $start_date ?></h5>
+                        <h2 style="margin-bottom:5px;"><?= $post->post_title ?></h2>
+                    </div>
+                </div>
+                <div id="tt-event-btn" class="col-sm-12 mt-4">
+                    <?php echo do_shortcode('[tt_btn link="' . $permalink . '" block="y"]Register[/tt_btn]'); ?>
+                </div>
+
+            </div>
+        </a>
+        <?php
+        $output = ob_get_contents();
+        ob_end_clean();
+
+        /* Restore original Post Data */
+        wp_reset_postdata();
+        return $output;
+    }
+endif;
+
+// ****************************************************
+if (!function_exists('fwp_display_upcoming_events')) :
+    /**
+     * display the next events 2 - 4
+     */
+    function fwp_display_upcoming_events()
+    {
+        $events = fwp_get_future_events();
+
+        $count = count($events);
+        if ($count <= 1) {
+            return 'Coming Soon.';
+        }
+        $i = 1;
+        while ($i <= 4 && $i < $count) :
+            $post = get_post($events[$i]['id']);
+            $permalink = get_permalink($post->ID);
+            // get event start date
+            $start_date = fwp_get_start_date($post->ID);
+            //get section html
+            ob_start();
+        ?>
+            <a class="row p-0 m-0" href="<?= $permalink ?>">
+                <div id="<?= $post->post_title ?>" class="col-sm-12 p-0" style="border-left:2px solid black;">
+                    <h5 style="margin:0 0 0 0;color:black;"><?= $start_date ?></h5>
+                    <h4 style="margin:0 0 5px 0;"><?= $post->post_title ?></h4>
+                </div>
+            </a>
+<?php
+            $i++;
+        endwhile;
+        $output = ob_get_contents();
+        ob_end_clean();
+
+        /* Restore original Post Data */
+        wp_reset_postdata();
+        return $output;
     }
 endif;

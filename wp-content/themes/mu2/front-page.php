@@ -26,7 +26,7 @@ get_header(); ?>
             </a>
             <div class="content">
                 <p class="headsub">Come check us out.</p>
-                <?php echo do_shortcode('[tt_posts limit="1" type="tribe_events" order="DSC" layout="list-event"]');
+                <?php echo fwp_display_next_event();
                 ?>
             </div>
         </div>

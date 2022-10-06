@@ -1,7 +1,6 @@
 <div id="locations-list" class="col-xs-12 col-sm-3">
     <h3>Upcoming Events</h3>
-    <?php //echo do_shortcode('[tt_posts limit="5" order="DSC" offset="1" type="tribe_events" cat="-7" layout="list-noimg"]'); 
-    ?>
+    <?php echo fwp_display_upcoming_events(); ?>
 </div>
 
 <?php
